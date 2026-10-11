@@ -10860,6 +10860,11 @@ public class MessagesController extends BaseController implements NotificationCe
     private long lastCheckPromoInfoTime;
 
     private void checkPromoInfoInternal(boolean reset) {
+        nextPromoInfoCheckTime = getConnectionsManager().getCurrentTime() + 60 * 60;
+        checkingPromoInfo = false;
+        if (true) {
+            return;
+        }
         if (reset && checkingPromoInfo) {
             checkingPromoInfo = false;
         }
@@ -21610,9 +21615,8 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public SponsoredMessagesInfo getSponsoredMessages(long dialogId) {
-        SponsoredMessagesInfo info = sponsoredMessages.get(dialogId);
-        if (info != null && (info.loading || Math.abs(SystemClock.elapsedRealtime() - info.loadTime) <= 5 * 60 * 1000)) {
-            return info;
+        if (true) {
+            return null;
         }
         if (dialogId < 0 ? !ChatObject.isChannel(getChat(-dialogId)) : !UserObject.isBot(getUser(dialogId))) {
             return null;
