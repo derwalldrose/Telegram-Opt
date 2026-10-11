@@ -19176,6 +19176,8 @@ public class MessagesController extends BaseController implements NotificationCe
             } else if (baseUpdate instanceof TL_update.TL_updateChatParticipantDelete) {
                 TL_update.TL_updateChatParticipantDelete update = (TL_update.TL_updateChatParticipantDelete) baseUpdate;
                 getMessagesStorage().updateChatInfo(update.chat_id, update.user_id, 1, 0, update.version);
+            } else if (baseUpdate instanceof TL_update.TL_updateLoginToken) {
+                getNotificationCenter().postNotificationName(NotificationCenter.onUpdateLoginToken);
             } else if (baseUpdate instanceof TL_update.TL_updateDcOptions || baseUpdate instanceof TL_update.TL_updateConfig) {
                 getConnectionsManager().updateDcSettings();
             } else if (baseUpdate instanceof TL_update.TL_updateEncryption) {

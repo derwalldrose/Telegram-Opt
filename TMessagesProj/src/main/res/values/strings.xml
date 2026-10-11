@@ -10,6 +10,8 @@
     <!--signin view-->
     <string name="YourPhone">Your Phone</string>
     <string name="StartText">Please confirm your country code and enter your phone number.</string>
+    <string name="QRLoginTitle">Log in with QR code</string>
+    <string name="QRLoginMessage">Open official Telegram on another device: Settings → Devices → Link Desktop Device, then scan this code.</string>
     <string name="StartTextPasskey">Please enter your phone number\nor **log in using passkey >**</string>
     <string name="Country">Country</string>
     <string name="YourNumber">Your phone number</string>
