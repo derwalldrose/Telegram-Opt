@@ -59,11 +59,7 @@ public class ProxyRotationController implements NotificationCenter.NotificationC
     private void switchToAvailable() {
         isCurrentlyChecking = false;
 
-        if (!SharedConfig.proxyRotationEnabled) {
-            return;
-        }
-        if (GramOpts.AUTO_DISABLE_PROXY_ON_VPN && GramOpts.isVpnEnabled()
-                && MessagesController.getGlobalMainSettings().getBoolean("gramProxyDisabledByVpn", false)) {
+        if (!SharedConfig.proxyRotationEnabled || GramOpts.inAppProxyBlockedByVpn()) {
             return;
         }
 
@@ -106,11 +102,7 @@ public class ProxyRotationController implements NotificationCenter.NotificationC
         } else if (id == NotificationCenter.proxySettingsChanged) {
             AndroidUtilities.cancelRunOnUIThread(checkProxyAndSwitchRunnable);
         } else if (id == NotificationCenter.didUpdateConnectionState && account == UserConfig.selectedAccount) {
-            if (!SharedConfig.isProxyEnabled() && !SharedConfig.proxyRotationEnabled || SharedConfig.proxyList.size() <= 1) {
-                return;
-            }
-            if (GramOpts.AUTO_DISABLE_PROXY_ON_VPN && GramOpts.isVpnEnabled()
-                    && MessagesController.getGlobalMainSettings().getBoolean("gramProxyDisabledByVpn", false)) {
+            if (GramOpts.inAppProxyBlockedByVpn() || !SharedConfig.isProxyEnabled() && !SharedConfig.proxyRotationEnabled || SharedConfig.proxyList.size() <= 1) {
                 return;
             }
 

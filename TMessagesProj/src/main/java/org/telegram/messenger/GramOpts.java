@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.os.Build;
 
 import org.telegram.tgnet.ConnectionsManager;
@@ -31,7 +33,9 @@ public final class GramOpts {
     public static final boolean NOQUOTE_FORWARD = true;
     public static final boolean REPEAT = true;
 
+    private static ConnectivityManager.NetworkCallback defaultCallback;
     private static ConnectivityManager.NetworkCallback vpnCallback;
+    private static boolean retriesScheduled;
     private static final Runnable applyRunnable = GramOpts::applyProxyForVpnNow;
 
     public static TLObject filterOutgoing(TLObject obj) {
@@ -48,6 +52,10 @@ public final class GramOpts {
             ((TL_account.updateStatus) obj).offline = true;
         }
         return obj;
+    }
+
+    public static boolean inAppProxyBlockedByVpn() {
+        return AUTO_DISABLE_PROXY_ON_VPN && isVpnEnabled();
     }
 
     public static boolean isVpnEnabled() {
@@ -67,10 +75,24 @@ public final class GramOpts {
             }
             Network active = cm.getActiveNetwork();
             NetworkCapabilities caps = cm.getNetworkCapabilities(active);
-            return caps != null && caps.hasTransport(NetworkCapabilities.TRANSPORT_VPN);
+            if (caps != null && caps.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
+                return true;
+            }
+            NetworkInfo vpnInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_VPN);
+            if (vpnInfo != null && vpnInfo.isConnectedOrConnecting()) {
+                return true;
+            }
+            NetworkInfo[] all = cm.getAllNetworkInfo();
+            if (all != null) {
+                for (NetworkInfo info : all) {
+                    if (info != null && info.getType() == ConnectivityManager.TYPE_VPN && info.isConnectedOrConnecting()) {
+                        return true;
+                    }
+                }
+            }
         } catch (Exception ignore) {
-            return false;
         }
+        return false;
     }
 
     public static void applyProxyForVpn() {
@@ -80,10 +102,26 @@ public final class GramOpts {
         ensureVpnCallback();
         AndroidUtilities.cancelRunOnUIThread(applyRunnable);
         applyProxyForVpnNow();
+        if (!retriesScheduled) {
+            retriesScheduled = true;
+            AndroidUtilities.runOnUIThread(applyRunnable, 500);
+            AndroidUtilities.runOnUIThread(applyRunnable, 2000);
+            AndroidUtilities.runOnUIThread(applyRunnable, 5000);
+        }
     }
 
     private static SharedPreferences mainConfig() {
         return ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Context.MODE_PRIVATE);
+    }
+
+    public static void persistDisabledByVpn() {
+        if (ApplicationLoader.applicationContext == null) {
+            return;
+        }
+        SharedPreferences prefs = mainConfig();
+        if (prefs.getBoolean("proxy_enabled", false) || prefs.getBoolean("gramProxyDisabledByVpn", false)) {
+            prefs.edit().putBoolean("proxy_enabled", false).putBoolean("gramProxyDisabledByVpn", true).commit();
+        }
     }
 
     private static void applyProxyForVpnNow() {
@@ -115,7 +153,7 @@ public final class GramOpts {
     }
 
     private static void ensureVpnCallback() {
-        if (vpnCallback != null || Build.VERSION.SDK_INT < Build.VERSION_CODES.N || ApplicationLoader.applicationContext == null) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N || ApplicationLoader.applicationContext == null) {
             return;
         }
         try {
@@ -123,25 +161,43 @@ public final class GramOpts {
             if (cm == null) {
                 return;
             }
-            vpnCallback = new ConnectivityManager.NetworkCallback() {
-                @Override
-                public void onAvailable(Network network) {
-                    scheduleApply();
-                }
+            if (defaultCallback == null) {
+                defaultCallback = new ConnectivityManager.NetworkCallback() {
+                    @Override
+                    public void onAvailable(Network network) {
+                        scheduleApply();
+                    }
 
-                @Override
-                public void onLost(Network network) {
-                    scheduleApply();
-                }
+                    @Override
+                    public void onLost(Network network) {
+                        scheduleApply();
+                    }
 
-                @Override
-                public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
-                    scheduleApply();
-                }
-            };
-            cm.registerDefaultNetworkCallback(vpnCallback);
+                    @Override
+                    public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
+                        scheduleApply();
+                    }
+                };
+                cm.registerDefaultNetworkCallback(defaultCallback);
+            }
+            if (vpnCallback == null) {
+                vpnCallback = new ConnectivityManager.NetworkCallback() {
+                    @Override
+                    public void onAvailable(Network network) {
+                        scheduleApply();
+                    }
+
+                    @Override
+                    public void onLost(Network network) {
+                        scheduleApply();
+                    }
+                };
+                NetworkRequest request = new NetworkRequest.Builder()
+                        .addTransportType(NetworkCapabilities.TRANSPORT_VPN)
+                        .build();
+                cm.registerNetworkCallback(request, vpnCallback);
+            }
         } catch (Exception ignore) {
-            vpnCallback = null;
         }
     }
 
