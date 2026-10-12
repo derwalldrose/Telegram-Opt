@@ -116,6 +116,7 @@ import org.telegram.messenger.FingerprintController;
 import org.telegram.messenger.FlagSecureReason;
 import org.telegram.messenger.GenericProvider;
 import org.telegram.messenger.GiftAuctionController;
+import org.telegram.messenger.GramOpts;
 import org.telegram.messenger.LiteMode;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.LocationController;
@@ -7013,6 +7014,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
             }
         }
         ConnectionsManager.getInstance(currentAccount).setAppPaused(false, false);
+        GramOpts.applyProxyForVpn();
         updateCurrentConnectionState(currentAccount);
         if (PhotoViewer.hasInstance() && PhotoViewer.getInstance().isVisible()) {
             PhotoViewer.getInstance().onResume();

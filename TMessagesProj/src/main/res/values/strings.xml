@@ -3784,6 +3784,8 @@
     <string name="AddACaption">Add Caption</string>
     <string name="Start">Start</string>
     <string name="Forward">Forward</string>
+    <string name="GramNoQuoteForward">Forward without quote</string>
+    <string name="GramRepeat">Repeat</string>
     <string name="Retry">Retry</string>
     <string name="DeletePhoto">Remove photo</string>
     <string name="Set">Set</string>

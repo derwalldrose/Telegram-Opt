@@ -43,7 +43,7 @@ public class SpoilersTextView extends TextView implements TextSelectionHelper.Si
     private SpoilersClickDetector clickDetector;
     protected List<SpoilerEffect> spoilers = new ArrayList<>();
     private Stack<SpoilerEffect> spoilersPool = new Stack<>();
-    private boolean isSpoilersRevealed;
+    private boolean isSpoilersRevealed = org.telegram.messenger.GramOpts.REVEAL_SPOILERS;
     private Path path = new Path();
     public boolean allowClickSpoilers = true;
 
