@@ -17,7 +17,7 @@ public final class GramOpts {
     private GramOpts() {}
 
     public static final boolean SEND_LARGE_PHOTO = true;
-    public static final boolean AUTO_DISABLE_PROXY_ON_VPN = false;
+    public static final boolean AUTO_DISABLE_PROXY_ON_VPN = true;
     public static final boolean DISABLE_SECOND_ADDRESS = false;
     public static final boolean DISABLE_SEND_TYPING = true;
     public static final boolean FORCE_OFFLINE = true;
@@ -66,12 +66,13 @@ public final class GramOpts {
         boolean vpn = isVpnEnabled();
         boolean enabled = SharedConfig.isProxyEnabled();
         SharedPreferences prefs = MessagesController.getGlobalMainSettings();
+        boolean weDisabled = prefs.getBoolean("gramProxyDisabledByVpn", false);
         if (vpn && enabled) {
-            prefs.edit().putBoolean("proxy_enabled", false).apply();
+            prefs.edit().putBoolean("proxy_enabled", false).putBoolean("gramProxyDisabledByVpn", true).apply();
             ConnectionsManager.setProxySettings(false, null);
             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.proxySettingsChanged);
-        } else if (!vpn && SharedConfig.currentProxy != null && !enabled) {
-            prefs.edit().putBoolean("proxy_enabled", true).apply();
+        } else if (!vpn && weDisabled && SharedConfig.currentProxy != null) {
+            prefs.edit().putBoolean("proxy_enabled", true).putBoolean("gramProxyDisabledByVpn", false).apply();
             ConnectionsManager.setProxySettings(true, SharedConfig.currentProxy.settings);
             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.proxySettingsChanged);
         }

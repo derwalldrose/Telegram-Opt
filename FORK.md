@@ -16,6 +16,7 @@ Name: Gram. Test-signed with the upstream sample keystore (`android` / `androidk
 - Launcher: two-tone Telegram-blue **G** on white (Nnngram N-style letter mark; light body + dark crossbar), not the paper plane. App name is Gram.
 - Default high-quality photo send (JPEG 99).
 - Auto-switch proxies (`UseProxyRotation`) defaults on so WEB/SOCKS list rotates when Connecting to proxy.
+- Disable in-app proxy while a system VPN is up; re-enable only if Gram turned it off. Clash/TUN also reports as VPN.
 - Do not send typing; report offline; do not mark stories read.
 - Hide stories bar, hide own phone in profile/settings, ignore blocked senders in notifications, reveal spoilers.
 - Long-press: no-quote forward and repeat.
