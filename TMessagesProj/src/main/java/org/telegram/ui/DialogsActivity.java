@@ -109,7 +109,6 @@ import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.Emoji;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
-import org.telegram.messenger.GramOpts;
 import org.telegram.messenger.FilesMigrationService;
 import org.telegram.messenger.ImageLoader;
 import org.telegram.messenger.ImageLocation;
@@ -8870,12 +8869,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         }
     }
 
-    public boolean storiesEnabled = !GramOpts.HIDE_STORIES;
+    public boolean storiesEnabled = true;
     private void updateStoriesPosting() {
-        if (GramOpts.HIDE_STORIES) {
-            this.storiesEnabled = false;
-            return;
-        }
         final boolean storiesEnabled = getMessagesController().storiesEnabled();
         if (this.storiesEnabled != storiesEnabled) {
             updateFloatingButtonOffset();

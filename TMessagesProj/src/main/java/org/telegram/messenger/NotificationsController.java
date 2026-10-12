@@ -1080,9 +1080,6 @@ public class NotificationsController extends BaseController implements Notificat
                     }
                     continue;
                 }
-                if (GramOpts.IGNORE_BLOCKED && getMessagesController().blockePeers.indexOfKey(messageObject.getSenderId()) >= 0) {
-                    continue;
-                }
                 if (messageObject.isStoryPush) {
                     long date = messageObject.messageOwner == null ? System.currentTimeMillis() : messageObject.messageOwner.date * 1000L;
                     long dialogId = messageObject.getDialogId();

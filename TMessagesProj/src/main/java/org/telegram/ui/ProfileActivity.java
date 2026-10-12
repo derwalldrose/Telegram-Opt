@@ -144,7 +144,6 @@ import org.telegram.messenger.DocumentObject;
 import org.telegram.messenger.Emoji;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
-import org.telegram.messenger.GramOpts;
 import org.telegram.messenger.FlagSecureReason;
 import org.telegram.messenger.ImageLoader;
 import org.telegram.messenger.ImageLocation;
@@ -10620,9 +10619,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     setAvatarSectionRow = rowCount++;
                 }
                 numberSectionRow = rowCount++;
-                if (!GramOpts.HIDE_PHONE) {
-                    numberRow = rowCount++;
-                }
+                numberRow = rowCount++;
                 setUsernameRow = rowCount++;
                 bioRow = rowCount++;
 

@@ -262,7 +262,7 @@ public class MessageObject {
     public boolean expandedExplanation;
     public boolean forceShowPollResults;
 
-    public boolean isSpoilersRevealed = GramOpts.REVEAL_SPOILERS;
+    public boolean isSpoilersRevealed;
     public boolean isMediaSpoilersRevealed;
     public boolean isMediaSpoilersRevealedInSharedMedia;
     public boolean revealingMediaSpoilers;
@@ -644,7 +644,7 @@ public class MessageObject {
     }
 
     public boolean hasMediaSpoilers() {
-        return !GramOpts.REVEAL_SPOILERS && !isRepostPreview && (messageOwner.media != null && messageOwner.media.spoiler || needDrawBluredPreview()) || isHiddenSensitive();
+        return !isRepostPreview && (messageOwner.media != null && messageOwner.media.spoiler || needDrawBluredPreview()) || isHiddenSensitive();
     }
 
     public Boolean isSensitiveCached;
