@@ -62,6 +62,10 @@ public class ProxyRotationController implements NotificationCenter.NotificationC
         if (!SharedConfig.proxyRotationEnabled) {
             return;
         }
+        if (GramOpts.AUTO_DISABLE_PROXY_ON_VPN && GramOpts.isVpnEnabled()
+                && MessagesController.getGlobalMainSettings().getBoolean("gramProxyDisabledByVpn", false)) {
+            return;
+        }
 
         List<SharedConfig.ProxyInfo> sortedList = new ArrayList<>(SharedConfig.proxyList);
         Collections.sort(sortedList, (o1, o2) -> Long.compare(o1.ping, o2.ping));
@@ -103,6 +107,10 @@ public class ProxyRotationController implements NotificationCenter.NotificationC
             AndroidUtilities.cancelRunOnUIThread(checkProxyAndSwitchRunnable);
         } else if (id == NotificationCenter.didUpdateConnectionState && account == UserConfig.selectedAccount) {
             if (!SharedConfig.isProxyEnabled() && !SharedConfig.proxyRotationEnabled || SharedConfig.proxyList.size() <= 1) {
+                return;
+            }
+            if (GramOpts.AUTO_DISABLE_PROXY_ON_VPN && GramOpts.isVpnEnabled()
+                    && MessagesController.getGlobalMainSettings().getBoolean("gramProxyDisabledByVpn", false)) {
                 return;
             }
 
