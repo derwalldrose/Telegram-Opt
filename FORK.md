@@ -15,8 +15,7 @@ Name: Gram. Test-signed with the upstream sample keystore (`android` / `androidk
 - Login: own `api_id`/`api_hash` from my.telegram.org (not official test id 4, not Nnngram); empty SafetyNet so login codes go to an already-open official session. QR login on the phone page (scan with official Telegram → Devices → Link Desktop Device).
 - Launcher: two-tone Telegram-blue **G** on white (Nnngram N-style letter mark; light body + dark crossbar), not the paper plane. App name is Gram.
 - Default high-quality photo send (JPEG 99).
-- Auto-switch proxies (`UseProxyRotation`) defaults on so WEB/SOCKS list rotates when Connecting to proxy.
-- System VPN on → disable in-app WEB/SOCKS/MTProto and use the VPN. Also skip `ConnectionsManager.init` proxy apply and refuse `setProxySettings(true)` / rotation while VPN is up. VPN off → restore only if Gram turned it off.
+- Proxy / WEB / VPN switching is **official** (no Gram VPN auto-toggle, no default proxy rotation).
 - Do not send typing; report offline; do not mark stories read.
 - Hide stories bar, hide own phone in profile/settings, ignore blocked senders in notifications, reveal spoilers.
 - Long-press: no-quote forward and repeat.

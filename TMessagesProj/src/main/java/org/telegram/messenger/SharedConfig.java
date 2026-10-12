@@ -535,14 +535,7 @@ public class SharedConfig {
             passportConfigJson = preferences.getString("passportConfigJson", "");
             passportConfigHash = preferences.getInt("passportConfigHash", 0);
             storageCacheDir = preferences.getString("storageCacheDir", null);
-            proxyRotationEnabled = preferences.getBoolean("proxyRotationEnabled", true);
-            if (!preferences.getBoolean("gramProxyRotationInited", false)) {
-                proxyRotationEnabled = true;
-                preferences.edit()
-                        .putBoolean("gramProxyRotationInited", true)
-                        .putBoolean("proxyRotationEnabled", true)
-                        .apply();
-            }
+            proxyRotationEnabled = preferences.getBoolean("proxyRotationEnabled", false);
             proxyRotationTimeout = preferences.getInt("proxyRotationTimeout", ProxyRotationController.DEFAULT_TIMEOUT_INDEX);
             String authKeyString = preferences.getString("pushAuthKey", null);
             if (!TextUtils.isEmpty(authKeyString)) {

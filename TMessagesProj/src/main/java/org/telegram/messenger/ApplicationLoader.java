@@ -245,8 +245,6 @@ public class ApplicationLoader extends Application {
         }
 
         SharedConfig.loadConfig();
-        SharedConfig.loadProxyList();
-        GramOpts.applyProxyForVpn();
         SharedPrefsHelper.init(applicationContext);
         for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) { //TODO improve account
             UserConfig.getInstance(a).loadConfig();
