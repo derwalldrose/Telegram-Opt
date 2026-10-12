@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.os.Build;
 
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLObject;
@@ -28,6 +29,8 @@ public final class GramOpts {
     public static final boolean REVEAL_SPOILERS = true;
     public static final boolean NOQUOTE_FORWARD = true;
     public static final boolean REPEAT = true;
+
+    private static ConnectivityManager.NetworkCallback vpnCallback;
 
     public static TLObject filterOutgoing(TLObject obj) {
         if (obj == null) {
@@ -63,6 +66,11 @@ public final class GramOpts {
         if (!AUTO_DISABLE_PROXY_ON_VPN) {
             return;
         }
+        ensureVpnCallback();
+        applyProxyForVpnNow();
+    }
+
+    private static void applyProxyForVpnNow() {
         boolean vpn = isVpnEnabled();
         boolean enabled = SharedConfig.isProxyEnabled();
         SharedPreferences prefs = MessagesController.getGlobalMainSettings();
@@ -75,6 +83,37 @@ public final class GramOpts {
             prefs.edit().putBoolean("proxy_enabled", true).putBoolean("gramProxyDisabledByVpn", false).apply();
             ConnectionsManager.setProxySettings(true, SharedConfig.currentProxy.settings);
             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.proxySettingsChanged);
+        }
+    }
+
+    private static void ensureVpnCallback() {
+        if (vpnCallback != null || Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            return;
+        }
+        try {
+            ConnectivityManager cm = (ConnectivityManager) ApplicationLoader.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm == null) {
+                return;
+            }
+            vpnCallback = new ConnectivityManager.NetworkCallback() {
+                @Override
+                public void onAvailable(Network network) {
+                    AndroidUtilities.runOnUIThread(GramOpts::applyProxyForVpnNow);
+                }
+
+                @Override
+                public void onLost(Network network) {
+                    AndroidUtilities.runOnUIThread(GramOpts::applyProxyForVpnNow);
+                }
+
+                @Override
+                public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
+                    AndroidUtilities.runOnUIThread(GramOpts::applyProxyForVpnNow);
+                }
+            };
+            cm.registerDefaultNetworkCallback(vpnCallback);
+        } catch (Exception ignore) {
+            vpnCallback = null;
         }
     }
 }
