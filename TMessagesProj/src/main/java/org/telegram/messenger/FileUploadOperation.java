@@ -37,7 +37,7 @@ public class FileUploadOperation {
     private boolean isLastPart;
     private boolean nextPartFirst;
     private int operationGuid;
-    private static final int minUploadChunkSize = 128;
+    private static final int minUploadChunkSize = 512;
     private static final int minUploadChunkSlowNetworkSize = 32;
     private static final int initialRequestsCount = 8;
     private static final int initialRequestsSlowNetworkCount = 1;

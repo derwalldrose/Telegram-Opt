@@ -10860,6 +10860,11 @@ public class MessagesController extends BaseController implements NotificationCe
     private long lastCheckPromoInfoTime;
 
     private void checkPromoInfoInternal(boolean reset) {
+        nextPromoInfoCheckTime = getConnectionsManager().getCurrentTime() + 60 * 60;
+        checkingPromoInfo = false;
+        if (true) {
+            return;
+        }
         if (reset && checkingPromoInfo) {
             checkingPromoInfo = false;
         }
@@ -19171,6 +19176,8 @@ public class MessagesController extends BaseController implements NotificationCe
             } else if (baseUpdate instanceof TL_update.TL_updateChatParticipantDelete) {
                 TL_update.TL_updateChatParticipantDelete update = (TL_update.TL_updateChatParticipantDelete) baseUpdate;
                 getMessagesStorage().updateChatInfo(update.chat_id, update.user_id, 1, 0, update.version);
+            } else if (baseUpdate instanceof TL_update.TL_updateLoginToken) {
+                getNotificationCenter().postNotificationName(NotificationCenter.onUpdateLoginToken);
             } else if (baseUpdate instanceof TL_update.TL_updateDcOptions || baseUpdate instanceof TL_update.TL_updateConfig) {
                 getConnectionsManager().updateDcSettings();
             } else if (baseUpdate instanceof TL_update.TL_updateEncryption) {
@@ -21610,6 +21617,9 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public SponsoredMessagesInfo getSponsoredMessages(long dialogId) {
+        if (true) {
+            return null;
+        }
         SponsoredMessagesInfo info = sponsoredMessages.get(dialogId);
         if (info != null && (info.loading || Math.abs(SystemClock.elapsedRealtime() - info.loadTime) <= 5 * 60 * 1000)) {
             return info;

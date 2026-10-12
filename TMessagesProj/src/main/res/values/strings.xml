@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="AppName">Telegram</string>
+    <string name="AppName">Gram</string>
     <string name="AppNameBeta">Telegram Beta</string>
     <string name="LanguageName">English</string>
     <string name="English">English</string>
@@ -10,6 +10,8 @@
     <!--signin view-->
     <string name="YourPhone">Your Phone</string>
     <string name="StartText">Please confirm your country code and enter your phone number.</string>
+    <string name="QRLoginTitle">Log in with QR code</string>
+    <string name="QRLoginMessage">Open official Telegram on another device: Settings → Devices → Link Desktop Device, then scan this code.</string>
     <string name="StartTextPasskey">Please enter your phone number\nor **log in using passkey >**</string>
     <string name="Country">Country</string>
     <string name="YourNumber">Your phone number</string>
@@ -3782,6 +3784,8 @@
     <string name="AddACaption">Add Caption</string>
     <string name="Start">Start</string>
     <string name="Forward">Forward</string>
+    <string name="GramNoQuoteForward">Forward without quote</string>
+    <string name="GramRepeat">Repeat</string>
     <string name="Retry">Retry</string>
     <string name="DeletePhoto">Remove photo</string>
     <string name="Set">Set</string>

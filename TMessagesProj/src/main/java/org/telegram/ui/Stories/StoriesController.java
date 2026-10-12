@@ -24,6 +24,7 @@ import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.DownloadController;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
+import org.telegram.messenger.GramOpts;
 import org.telegram.messenger.FileRefController;
 import org.telegram.messenger.ImageLocation;
 import org.telegram.messenger.LocaleController;
@@ -256,6 +257,9 @@ public class StoriesController {
         if (isLastUploadingFailed(dialogId)) {
             return true;
         }
+        if (GramOpts.HIDE_STORIES) {
+            return false;
+        }
         TL_stories.PeerStories stories = allStoriesMap.get(dialogId);
         if (stories == null) {
             stories = getStoriesFromFullPeer(dialogId);
@@ -280,6 +284,9 @@ public class StoriesController {
     }
 
     public boolean hasStories() {
+        if (GramOpts.HIDE_STORIES) {
+            return false;
+        }
         return (dialogListStories != null && dialogListStories.size() > 0) || hasSelfStories();
     }
 
