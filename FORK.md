@@ -16,7 +16,7 @@ Name: Gram. Test-signed with the upstream sample keystore (`android` / `androidk
 - Launcher: two-tone Telegram-blue **G** on white (Nnngram N-style letter mark; light body + dark crossbar), not the paper plane. App name is Gram.
 - Default high-quality photo send (JPEG 99).
 - Auto-switch proxies (`UseProxyRotation`) defaults on so WEB/SOCKS list rotates when Connecting to proxy.
-- SOCKS/MTProto auto-off while a system VPN is up; restore only if Gram turned it off. WEB proxy stays on under VPN (loopback + Clash TUN; turning it off stuck Connecting/Updating). Watches NetworkCallback, all VPN networks, and applies before native init.
+- System VPN on → disable in-app WEB/SOCKS/MTProto and use the VPN. VPN off → restore only if Gram turned it off. Applies before native init; watches NetworkCallback.
 - Do not send typing; report offline; do not mark stories read.
 - Hide stories bar, hide own phone in profile/settings, ignore blocked senders in notifications, reveal spoilers.
 - Long-press: no-quote forward and repeat.

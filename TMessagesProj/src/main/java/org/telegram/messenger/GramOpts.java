@@ -86,10 +86,6 @@ public final class GramOpts {
         return ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Context.MODE_PRIVATE);
     }
 
-    private static boolean isWebProxy(ProxySettings settings) {
-        return settings != null && settings.isValid() && settings.getType() == ProxySettings.Type.WEB;
-    }
-
     private static void applyProxyForVpnNow() {
         if (!AUTO_DISABLE_PROXY_ON_VPN || ApplicationLoader.applicationContext == null) {
             return;
@@ -102,9 +98,6 @@ public final class GramOpts {
         boolean weDisabled = prefs.getBoolean("gramProxyDisabledByVpn", false);
 
         if (vpn && enabled) {
-            if (isWebProxy(settings)) {
-                return;
-            }
             prefs.edit().putBoolean("proxy_enabled", false).putBoolean("gramProxyDisabledByVpn", true).commit();
             ConnectionsManager.setProxySettings(false, null);
             NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.proxySettingsChanged);
