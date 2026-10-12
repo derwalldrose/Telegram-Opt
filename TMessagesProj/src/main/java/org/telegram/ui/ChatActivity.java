@@ -156,6 +156,7 @@ import org.telegram.messenger.EmojiData;
 import org.telegram.messenger.FactCheckController;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
+import org.telegram.messenger.GramOpts;
 import org.telegram.messenger.FlagSecureReason;
 import org.telegram.messenger.HashtagSearchController;
 import org.telegram.messenger.ImageLoader;
@@ -1247,6 +1248,10 @@ public class ChatActivity extends BaseFragment implements
 
     public final static int OPTION_VIEW_STATISTICS = 115;
     public final static int OPTION_WELCOME_REVERT = 116;
+    public final static int OPTION_NOQUOTE_FORWARD = 200;
+    public final static int OPTION_REPEAT = 201;
+
+    private boolean gramNoQuoteForward;
 
     private final static int[] allowedNotificationsDuringChatListAnimations = new int[]{
             NotificationCenter.messagesRead,
@@ -14383,6 +14388,9 @@ public class ChatActivity extends BaseFragment implements
     private void forwardMessages(ArrayList<MessageObject> arrayList, boolean fromMyName, boolean hideCaption, boolean notify, int scheduleDate, long payStars) {
         if (arrayList == null || arrayList.isEmpty()) {
             return;
+        }
+        if (GramOpts.NOQUOTE_FORWARD && gramNoQuoteForward) {
+            fromMyName = true;
         }
         if (!checkSlowModeAlert()) {
             return;
@@ -33350,7 +33358,8 @@ public class ChatActivity extends BaseFragment implements
                 createDeleteMessagesAlert(selectedObject, selectedObjectGroup, true);
                 break;
             }
-            case OPTION_FORWARD: {
+            case OPTION_FORWARD:
+            case OPTION_NOQUOTE_FORWARD: {
                 if (getMessagesController().isFrozen()) {
                     AccountFrozenAlert.show(currentAccount);
                     selectedObject = null;
@@ -33358,6 +33367,7 @@ public class ChatActivity extends BaseFragment implements
                     selectedObjectGroup = null;
                     return;
                 }
+                gramNoQuoteForward = option == OPTION_NOQUOTE_FORWARD;
                 forwardingMessage = selectedObject;
                 forwardingMessageGroup = selectedObjectGroup;
                 Bundle args = new Bundle();
@@ -33373,6 +33383,25 @@ public class ChatActivity extends BaseFragment implements
                 DialogsActivity fragment = new DialogsActivity(args);
                 fragment.setDelegate(this);
                 presentFragment(fragment);
+                break;
+            }
+            case OPTION_REPEAT: {
+                if (chatActivityEnterView == null || !checkSlowModeAlert()) {
+                    return;
+                }
+                ArrayList<MessageObject> repeat = new ArrayList<>();
+                if (selectedObjectGroup != null) {
+                    repeat.addAll(selectedObjectGroup.messages);
+                } else if (selectedObject != null) {
+                    repeat.add(selectedObject);
+                }
+                AlertsCreator.ensurePaidMessageConfirmation(currentAccount, getDialogId(), Math.max(1, repeat.size()), payStars -> {
+                    gramNoQuoteForward = false;
+                    forwardMessages(repeat, false, false, true, 0, payStars);
+                });
+                selectedObject = null;
+                selectedObjectToEditCaption = null;
+                selectedObjectGroup = null;
                 break;
             }
             case OPTION_COPY: {
@@ -46162,6 +46191,19 @@ public class ChatActivity extends BaseFragment implements
                     items.add(LocaleController.getString(R.string.Forward));
                     options.add(OPTION_FORWARD);
                     icons.add(R.drawable.msg_forward);
+                    if (GramOpts.NOQUOTE_FORWARD && !UserObject.isUserSelf(currentUser)) {
+                        items.add(LocaleController.getString(R.string.GramNoQuoteForward));
+                        options.add(OPTION_NOQUOTE_FORWARD);
+                        icons.add(R.drawable.msg_forward);
+                    }
+                }
+                if (GramOpts.REPEAT && allowChatActions && !selectedObject.isSponsored() && chatMode != MODE_SCHEDULED
+                        && (!selectedObject.needDrawBluredPreview() || selectedObject.hasExtendedMediaPreview())
+                        && !selectedObject.isLiveLocation() && selectedObject.type != MessageObject.TYPE_PHONE_CALL
+                        && selectedObject.type != MessageObject.TYPE_GIFT_PREMIUM) {
+                    items.add(LocaleController.getString(R.string.GramRepeat));
+                    options.add(OPTION_REPEAT);
+                    icons.add(R.drawable.msg_retry);
                 }
                 if (allowUnpin) {
                     items.add(LocaleController.getString(R.string.UnpinMessage));
