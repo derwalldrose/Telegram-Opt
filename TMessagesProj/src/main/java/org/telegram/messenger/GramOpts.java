@@ -17,8 +17,8 @@ public final class GramOpts {
     private GramOpts() {}
 
     public static final boolean SEND_LARGE_PHOTO = true;
-    public static final boolean AUTO_DISABLE_PROXY_ON_VPN = true;
-    public static final boolean DISABLE_SECOND_ADDRESS = true;
+    public static final boolean AUTO_DISABLE_PROXY_ON_VPN = false;
+    public static final boolean DISABLE_SECOND_ADDRESS = false;
     public static final boolean DISABLE_SEND_TYPING = true;
     public static final boolean FORCE_OFFLINE = true;
     public static final boolean STORY_STEALTH = true;

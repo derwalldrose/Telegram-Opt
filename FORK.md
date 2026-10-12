@@ -15,8 +15,7 @@ Name: Gram. Test-signed with the upstream sample keystore (`android` / `androidk
 - Login: own `api_id`/`api_hash` from my.telegram.org (not official test id 4, not Nnngram); empty SafetyNet so login codes go to an already-open official session. QR login on the phone page (scan with official Telegram → Devices → Link Desktop Device).
 - Launcher: two-tone Telegram-blue **G** on white (Nnngram N-style letter mark; light body + dark crossbar), not the paper plane. App name is Gram.
 - Default high-quality photo send (JPEG 99).
-- Disable in-app proxy while a system VPN is up; re-enable when VPN drops.
-- Skip DC second-address / Mozilla TXT hunt.
+- VPN vs in-app proxy and skip-second-DC are **off**: Clash/TUN reports as VPN and would disable the in-app proxy, which stuck Connecting/Updating.
 - Do not send typing; report offline; do not mark stories read.
 - Hide stories bar, hide own phone in profile/settings, ignore blocked senders in notifications, reveal spoilers.
 - Long-press: no-quote forward and repeat.
