@@ -26,8 +26,8 @@ public class BuildVars {
     public static boolean NO_SCOPED_STORAGE = Build.VERSION.SDK_INT <= 29;
     public static String BUILD_VERSION_STRING = BuildConfig.BUILD_VERSION_STRING;
 
-    public static int APP_ID = 25184524;
-    public static String APP_HASH = "0cda2e05621028b7d3836504dad86b9c";
+    public static int APP_ID = 33637800;
+    public static String APP_HASH = "6e3763950cbc5511c7d157c41f902c6a";
 
     // SafetyNet key for Google Identity SDK, set it to empty to disable
     public static String SAFETYNET_KEY = "";

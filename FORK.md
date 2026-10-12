@@ -12,7 +12,8 @@ Name: Telegram Opt. Test-signed with the upstream sample keystore (`android` / `
 - Hide channel/bot sponsored messages (no `getSponsoredMessages`).
 - Hide search sponsored peers.
 - Hide proxy promo/sponsor dialog (`help.getPromoData`).
-- Login: Nnngram public `api_id`/`api_hash` instead of official test id 4; empty SafetyNet so login codes go to an already-open official session. QR login on the phone page (scan with official Telegram → Devices → Link Desktop Device).
+- Login: own `api_id`/`api_hash` from my.telegram.org (not official test id 4, not Nnngram); empty SafetyNet so login codes go to an already-open official session. QR login on the phone page (scan with official Telegram → Devices → Link Desktop Device).
+- Launcher: geometric **T** (Nnngram-style letter mark) on Telegram blue instead of the paper plane.
 
 ## Intentionally not ported
 
